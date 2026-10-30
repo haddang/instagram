@@ -215,7 +215,12 @@
     <div class="modal-panel">
       <div class="modal-header">
         <h3 class="modal-title">📅 날짜로 이동</h3>
-        <button class="btn-icon modal-close-btn" data-target="dateModal">&times;</button>
+        <button class="modal-close-btn" data-target="dateModal" onclick="window.closeAnyModal('dateModal')" title="닫기" aria-label="닫기">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
       </div>
       <div class="modal-body">
         <div style="font-size:13px; color:var(--text-secondary); margin-bottom:4px;">
@@ -245,7 +250,12 @@
     <div class="modal-panel gallery-modal-panel">
       <div class="modal-header">
         <h3 class="modal-title">🖼️ 사진 및 동영상 갤러리 (<span id="galleryTotalCount">0</span>)</h3>
-        <button class="btn-icon modal-close-btn" data-target="galleryModal">&times;</button>
+        <button class="modal-close-btn" data-target="galleryModal" onclick="window.closeAnyModal('galleryModal')" title="닫기" aria-label="닫기">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
       </div>
       
       <div class="gallery-tabs">
@@ -260,7 +270,12 @@
 
   <!-- 3. Fullscreen Lightbox Modal -->
   <div class="lightbox-overlay" id="lightboxOverlay">
-    <button class="lightbox-close-btn" id="btnLightboxClose">&times;</button>
+    <button class="lightbox-close-btn" id="btnLightboxClose" onclick="window.closeLightbox()" title="닫기" aria-label="닫기">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
     <div class="lightbox-content-box" id="lightboxContent"></div>
     <button class="lightbox-jump-btn" id="btnLightboxJump">대화 내용으로 이동</button>
   </div>
@@ -270,7 +285,12 @@
     <div class="modal-panel">
       <div class="modal-header">
         <h3 class="modal-title">⚙️ 대화 설정 및 통계</h3>
-        <button class="btn-icon modal-close-btn" data-target="settingsModal">&times;</button>
+        <button class="modal-close-btn" data-target="settingsModal" onclick="window.closeAnyModal('settingsModal')" title="닫기" aria-label="닫기">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
       </div>
       <div class="modal-body">
         

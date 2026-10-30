@@ -50,6 +50,8 @@
     
     // Header
     el.headerAvatar = document.getElementById('headerAvatar');
+    el.headerAvatarBtn = document.getElementById('headerAvatarBtn');
+    el.partnerInfoBtn = document.getElementById('partnerInfoBtn');
     el.partnerNameText = document.getElementById('partnerNameText');
     el.partnerSubtext = document.getElementById('partnerSubtext');
     
@@ -780,6 +782,7 @@
   function openMediaGallery() {
     state.galleryPage = 0;
     el.galleryGrid.innerHTML = '';
+    el.galleryGrid.scrollTop = 0;
     renderGalleryChunk();
     openModal(el.galleryModal);
   }
@@ -802,7 +805,7 @@
       html += `
         <div class="gallery-grid-item" onclick="window.viewMediaInLightbox('${item.u}', '${item.y}', ${item.i})">
           ${isVideo
-            ? `<video src="${item.u}" preload="metadata" muted></video><div class="gallery-video-icon">▶ 영상</div>`
+            ? `<video src="${item.u}" preload="metadata" muted playsinline></video><div class="gallery-video-icon">▶ 영상</div>`
             : `<img src="${item.u}" loading="lazy" alt="media" onerror="this.parentElement.style.display='none';">`
           }
         </div>
@@ -819,7 +822,7 @@
   // Infinite scroll in gallery
   function handleGalleryScroll() {
     const grid = el.galleryGrid;
-    if (grid.scrollTop + grid.clientHeight >= grid.scrollHeight - 200) {
+    if (grid.scrollTop + grid.clientHeight >= grid.scrollHeight - 300) {
       const list = getFilteredMedia();
       if ((state.galleryPage + 1) * state.galleryPageSize < list.length) {
         state.galleryPage++;
@@ -827,6 +830,24 @@
       }
     }
   }
+
+  // Global Close Modal Helpers (Called directly from onclick as well as event listeners)
+  window.closeAnyModal = function (modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.classList.remove('active');
+    }
+  };
+
+  window.closeLightbox = function () {
+    closeLightbox();
+  };
+
+  window.closeSearchBar = function () {
+    if (el.searchBarContainer) {
+      el.searchBarContainer.classList.remove('active');
+    }
+  };
 
   // ============================================================
   // Lightbox Modal
@@ -1001,31 +1022,37 @@
     });
 
     // Search Controls
-    el.btnToggleSearch.addEventListener('click', () => {
-      el.searchBarContainer.classList.toggle('active');
-      if (el.searchBarContainer.classList.contains('active')) {
-        el.searchInput.focus();
-      }
-    });
+    if (el.btnToggleSearch) {
+      el.btnToggleSearch.addEventListener('click', () => {
+        el.searchBarContainer.classList.toggle('active');
+        if (el.searchBarContainer.classList.contains('active')) {
+          el.searchInput.focus();
+        }
+      });
+    }
 
-    el.btnCloseSearch.addEventListener('click', () => {
-      el.searchBarContainer.classList.remove('active');
-    });
+    if (el.btnCloseSearch) {
+      el.btnCloseSearch.addEventListener('click', () => {
+        el.searchBarContainer.classList.remove('active');
+      });
+    }
 
-    el.searchInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') performSearch();
-    });
+    if (el.searchInput) {
+      el.searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') performSearch();
+      });
+    }
 
-    el.btnSearchNext.addEventListener('click', searchNext);
-    el.btnSearchPrev.addEventListener('click', searchPrev);
+    if (el.btnSearchNext) el.btnSearchNext.addEventListener('click', searchNext);
+    if (el.btnSearchPrev) el.btnSearchPrev.addEventListener('click', searchPrev);
 
     // Date Modal
-    el.btnOpenDateModal.addEventListener('click', () => openModal(el.dateModal));
-    el.btnJumpToExactDate.addEventListener('click', jumpToExactDate);
+    if (el.btnOpenDateModal) el.btnOpenDateModal.addEventListener('click', () => openModal(el.dateModal));
+    if (el.btnJumpToExactDate) el.btnJumpToExactDate.addEventListener('click', jumpToExactDate);
 
     // Media Gallery Modal
-    el.btnOpenGallery.addEventListener('click', openMediaGallery);
-    el.galleryGrid.addEventListener('scroll', handleGalleryScroll, { passive: true });
+    if (el.btnOpenGallery) el.btnOpenGallery.addEventListener('click', openMediaGallery);
+    if (el.galleryGrid) el.galleryGrid.addEventListener('scroll', handleGalleryScroll, { passive: true });
 
     document.querySelectorAll('.gallery-tab').forEach(tab => {
       tab.addEventListener('click', () => {
@@ -1034,71 +1061,86 @@
         state.galleryFilter = tab.getAttribute('data-filter');
         state.galleryPage = 0;
         el.galleryGrid.innerHTML = '';
+        el.galleryGrid.scrollTop = 0;
         renderGalleryChunk();
       });
     });
 
     // Lightbox Controls
-    el.btnLightboxClose.addEventListener('click', closeLightbox);
-    el.lightboxOverlay.addEventListener('click', (e) => {
-      if (e.target === el.lightboxOverlay) closeLightbox();
-    });
-    el.btnLightboxJump.addEventListener('click', jumpFromLightbox);
+    if (el.btnLightboxClose) el.btnLightboxClose.addEventListener('click', closeLightbox);
+    if (el.lightboxOverlay) {
+      el.lightboxOverlay.addEventListener('click', (e) => {
+        if (e.target === el.lightboxOverlay) closeLightbox();
+      });
+    }
+    if (el.btnLightboxJump) el.btnLightboxJump.addEventListener('click', jumpFromLightbox);
 
     // Device Mode Toggle (Desktop / Mobile Frame)
-    el.btnToggleDevice.addEventListener('click', () => {
-      const newMode = state.deviceMode === 'desktop' ? 'mobile' : 'desktop';
-      applyDeviceMode(newMode);
-    });
+    if (el.btnToggleDevice) {
+      el.btnToggleDevice.addEventListener('click', () => {
+        const newMode = state.deviceMode === 'desktop' ? 'mobile' : 'desktop';
+        applyDeviceMode(newMode);
+      });
+    }
 
     // Theme Toggle
-    el.btnToggleTheme.addEventListener('click', () => {
-      const newTheme = state.theme === 'dark' ? 'light' : 'dark';
-      applyTheme(newTheme);
-    });
+    if (el.btnToggleTheme) {
+      el.btnToggleTheme.addEventListener('click', () => {
+        const newTheme = state.theme === 'dark' ? 'light' : 'dark';
+        applyTheme(newTheme);
+      });
+    }
 
     // Settings Modal
-    el.btnOpenSettings.addEventListener('click', () => openModal(el.settingsModal));
-    el.partnerInfoBtn.addEventListener('click', () => openModal(el.settingsModal));
-    el.headerAvatarBtn.addEventListener('click', () => openModal(el.settingsModal));
+    if (el.btnOpenSettings) el.btnOpenSettings.addEventListener('click', () => openModal(el.settingsModal));
+    if (el.partnerInfoBtn) el.partnerInfoBtn.addEventListener('click', () => openModal(el.settingsModal));
+    if (el.headerAvatarBtn) el.headerAvatarBtn.addEventListener('click', () => openModal(el.settingsModal));
 
     // Perspective Selector
-    el.perspectiveSelect.addEventListener('change', (e) => {
-      state.mySenderIdx = parseInt(e.target.value, 10);
-      localStorage.setItem('insta_perspective', state.mySenderIdx);
-      updateHeaderInfo();
-      // Re-render current range
-      renderRange(state.startIndex, state.endIndex, 'replace');
-    });
+    if (el.perspectiveSelect) {
+      el.perspectiveSelect.addEventListener('change', (e) => {
+        state.mySenderIdx = parseInt(e.target.value, 10);
+        localStorage.setItem('insta_perspective', state.mySenderIdx);
+        updateHeaderInfo();
+        renderRange(state.startIndex, state.endIndex, 'replace');
+      });
+    }
 
     // Setting Theme Toggle switch
-    el.settingThemeToggle.addEventListener('change', (e) => {
-      applyTheme(e.target.checked ? 'dark' : 'light');
-    });
+    if (el.settingThemeToggle) {
+      el.settingThemeToggle.addEventListener('change', (e) => {
+        applyTheme(e.target.checked ? 'dark' : 'light');
+      });
+    }
 
     // Bubble Color Selector
-    el.bubbleColorSelect.addEventListener('change', (e) => {
-      applyBubbleColor(e.target.value);
-    });
+    if (el.bubbleColorSelect) {
+      el.bubbleColorSelect.addEventListener('change', (e) => {
+        applyBubbleColor(e.target.value);
+      });
+    }
 
     // Avatar File Input
-    el.avatarFileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          state.customAvatar = event.target.result;
-          localStorage.setItem('insta_partner_avatar', state.customAvatar);
-          updateHeaderInfo();
-          renderRange(state.startIndex, state.endIndex, 'replace');
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+    if (el.avatarFileInput) {
+      el.avatarFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            state.customAvatar = event.target.result;
+            localStorage.setItem('insta_partner_avatar', state.customAvatar);
+            updateHeaderInfo();
+            renderRange(state.startIndex, state.endIndex, 'replace');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
 
-    // Close Modal Buttons
+    // Close Modal Buttons (Delegated and direct)
     document.querySelectorAll('.modal-close-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const targetId = btn.getAttribute('data-target');
         const modal = document.getElementById(targetId);
         if (modal) closeModal(modal);
@@ -1114,9 +1156,11 @@
     // Keyboard Shortcuts (Esc to close modals, Arrow keys in search)
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        if (el.lightboxOverlay.classList.contains('active')) closeLightbox();
+        if (el.lightboxOverlay && el.lightboxOverlay.classList.contains('active')) closeLightbox();
         document.querySelectorAll('.modal-backdrop.active').forEach(m => closeModal(m));
-        if (el.searchBarContainer.classList.contains('active')) el.searchBarContainer.classList.remove('active');
+        if (el.searchBarContainer && el.searchBarContainer.classList.contains('active')) {
+          el.searchBarContainer.classList.remove('active');
+        }
       }
     });
   }
